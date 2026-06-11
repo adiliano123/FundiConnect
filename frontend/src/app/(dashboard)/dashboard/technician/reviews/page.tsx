@@ -69,7 +69,7 @@ export default function TechnicianReviewsPage() {
               <div key={r.id} className="py-4">
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-center gap-2.5">
-                    <div className="w-8 h-8 rounded-full bg-[#1C9AD6] flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
+                    <div className="w-8 h-8 rounded-full bg-[#1C9AD6] flex items-center justify-center text-white text-xs font-bold shrink-0">
                       {r.customer?.name?.charAt(0)}
                     </div>
                     <div>

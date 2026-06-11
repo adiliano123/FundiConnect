@@ -82,7 +82,7 @@ export default function TechnicianJobsPage() {
                       <span>📅 {formatDate(b.scheduled_at)}</span>
                     </div>
                   </div>
-                  <div className="flex gap-2 flex-shrink-0">
+                  <div className="flex gap-2 shrink-0">
                     {b.status === 'pending' && (
                       <>
                         <button onClick={() => updateStatus(b.id, 'accepted')} className="px-3 py-1.5 bg-[#59BD7B] text-white text-xs font-semibold rounded-lg hover:bg-green-600 transition-colors">Accept</button>

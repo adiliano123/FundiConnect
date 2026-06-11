@@ -54,7 +54,7 @@ export default function AdminReviewsPage() {
                   {r.comment && <p className="text-sm text-gray-600 mt-1">{r.comment}</p>}
                   <p className="text-xs text-gray-400 mt-1">{timeAgo(r.created_at)}</p>
                 </div>
-                <button onClick={() => handleDelete(r.id)} className="text-xs text-red-500 hover:underline flex-shrink-0">Delete</button>
+                <button onClick={() => handleDelete(r.id)} className="text-xs text-red-500 hover:underline shrink-0">Delete</button>
               </div>
             ))}
           </div>

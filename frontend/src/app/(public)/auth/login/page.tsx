@@ -157,7 +157,7 @@ function LoginForm() {
           <div className="space-y-6">
             {features.map(({ icon: Icon, title, desc }) => (
               <div key={title} className="flex items-start gap-4">
-                <div className="w-9 h-9 rounded-lg bg-[#1C9AD6]/15 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <div className="w-9 h-9 rounded-lg bg-[#1C9AD6]/15 flex items-center justify-center shrink-0 mt-0.5">
                   <Icon className="w-4.5 h-4.5 text-[#1C9AD6]" />
                 </div>
                 <div>

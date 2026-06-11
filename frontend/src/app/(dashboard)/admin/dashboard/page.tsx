@@ -49,7 +49,7 @@ export default function AdminDashboard() {
           <Link key={label} href={href}>
             <Card className="p-5 hover:shadow-md transition-shadow cursor-pointer">
               <div className="flex items-center gap-3">
-                <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${bg}`}>
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${bg}`}>
                   <Icon className={`w-5 h-5 ${color}`} aria-hidden="true" />
                 </div>
                 <div className="min-w-0">

@@ -46,7 +46,7 @@ export default function TechnicianProfilePage() {
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
             <div className="flex flex-col sm:flex-row gap-6">
               {/* Avatar */}
-              <div className="flex-shrink-0">
+              <div className="shrink-0">
                 <div className="w-28 h-28 rounded-2xl bg-[#1C9AD6] flex items-center justify-center text-white text-4xl font-bold border-4 border-white shadow-md">
                   {technician.user?.name?.charAt(0)}
                 </div>

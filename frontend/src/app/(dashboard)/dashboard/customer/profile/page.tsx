@@ -84,7 +84,7 @@ export default function CustomerProfilePage() {
 
       {/* Avatar card */}
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 flex items-center gap-5">
-        <div className="relative flex-shrink-0">
+        <div className="relative shrink-0">
           <div className="w-20 h-20 rounded-full overflow-hidden bg-[#1C9AD6] flex items-center justify-center">
             {(user?.avatar_url || user?.avatar) ? (
               <img src={user.avatar_url || user.avatar} alt="Profile" className="w-full h-full object-cover" />

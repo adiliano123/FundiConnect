@@ -155,7 +155,7 @@ export default function Testimonials() {
               aria-label={`View testimonial from ${name}`}
             >
               <div className="flex items-center gap-2 mb-2">
-                <div className={`w-8 h-8 rounded-full ${color} flex items-center justify-center text-white text-xs font-bold flex-shrink-0`}>
+                <div className={`w-8 h-8 rounded-full ${color} flex items-center justify-center text-white text-xs font-bold shrink-0`}>
                   {initials}
                 </div>
                 <div>

@@ -152,7 +152,7 @@ export default function PaymentModal({ booking, onClose, onSuccess }: Props) {
                       className={`flex items-center gap-2 p-3 rounded-xl border-2 text-sm font-semibold transition-colors ${
                         method === m.value ? 'border-[#1C9AD6] bg-blue-50 text-[#1C9AD6]' : 'border-gray-200 text-gray-600 hover:border-gray-300'
                       }`}>
-                      <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: m.color }} />
+                      <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: m.color }} />
                       {m.label}
                     </button>
                   ))}
@@ -168,7 +168,7 @@ export default function PaymentModal({ booking, onClose, onSuccess }: Props) {
                       className={`flex items-center gap-2 p-3 rounded-xl border-2 text-sm font-semibold transition-colors ${
                         method === m.value ? 'border-[#1C9AD6] bg-blue-50 text-[#1C9AD6]' : 'border-gray-200 text-gray-600 hover:border-gray-300'
                       }`}>
-                      <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: m.color }} />
+                      <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: m.color }} />
                       {m.label}
                     </button>
                   ))}

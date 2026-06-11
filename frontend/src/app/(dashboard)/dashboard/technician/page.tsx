@@ -80,7 +80,7 @@ export default function TechnicianDashboard() {
         ].map(({ label, value, icon: Icon, bg, color }) => (
           <Card key={label} className="p-5">
             <div className="flex items-center gap-3">
-              <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${bg}`}>
+              <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${bg}`}>
                 <Icon className={`w-5 h-5 ${color}`} aria-hidden="true" />
               </div>
               <div>
@@ -139,7 +139,7 @@ export default function TechnicianDashboard() {
                       <span>📅 {formatDate(b.scheduled_at)}</span>
                     </div>
                   </div>
-                  <div className="flex gap-2 flex-shrink-0">
+                  <div className="flex gap-2 shrink-0">
                     <button
                       onClick={() => handleUpdateStatus(b.id, 'accepted')}
                       className="px-3 py-1.5 bg-[#59BD7B] text-white text-xs font-semibold rounded-lg hover:bg-green-600 transition-colors"

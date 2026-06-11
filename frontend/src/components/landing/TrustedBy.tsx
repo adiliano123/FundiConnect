@@ -29,7 +29,7 @@ export default function TrustedBy() {
               transition={{ delay: i * 0.1 }}
               className="flex items-center gap-3 p-4 rounded-2xl bg-gray-50 border border-gray-100"
             >
-              <Icon className={`w-8 h-8 flex-shrink-0 ${color}`} aria-hidden="true" />
+              <Icon className={`w-8 h-8 shrink-0 ${color}`} aria-hidden="true" />
               <span className="text-sm font-semibold text-gray-700">{label}</span>
             </motion.div>
           ))}

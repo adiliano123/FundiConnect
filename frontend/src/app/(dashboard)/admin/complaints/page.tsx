@@ -57,7 +57,7 @@ export default function AdminComplaintsPage() {
                     <p className="text-xs text-gray-400 mt-1">{formatDate(c.created_at)}</p>
                   </div>
                   {c.status === 'open' && (
-                    <div className="flex gap-2 flex-shrink-0">
+                    <div className="flex gap-2 shrink-0">
                       <button onClick={() => resolve(c.id, 'resolved')} className="px-2.5 py-1 bg-green-100 text-green-700 text-xs font-semibold rounded-lg hover:bg-green-200">Resolve</button>
                       <button onClick={() => resolve(c.id, 'dismissed')} className="px-2.5 py-1 bg-gray-100 text-gray-600 text-xs font-semibold rounded-lg hover:bg-gray-200">Dismiss</button>
                     </div>

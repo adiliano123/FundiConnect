@@ -56,7 +56,7 @@ export default function CustomerNotificationsPage() {
           <div className="divide-y divide-gray-50">
             {notifications.map(n => (
               <div key={n.id} className={`flex items-start gap-3 py-4 px-1 ${!n.read_at ? 'bg-blue-50/30' : ''}`}>
-                <div className={`w-2 h-2 rounded-full mt-2 flex-shrink-0 ${!n.read_at ? 'bg-[#1C9AD6]' : 'bg-gray-200'}`} />
+                <div className={`w-2 h-2 rounded-full mt-2 shrink-0 ${!n.read_at ? 'bg-[#1C9AD6]' : 'bg-gray-200'}`} />
                 <div className="flex-1 min-w-0">
                   <p className="text-sm text-gray-800">{n.data.message}</p>
                   {n.data.booking_number && (
@@ -65,7 +65,7 @@ export default function CustomerNotificationsPage() {
                   <p className="text-xs text-gray-400 mt-1">{timeAgo(n.created_at)}</p>
                 </div>
                 {!n.read_at && (
-                  <button onClick={() => markRead(n.id)} className="text-xs text-[#1C9AD6] hover:underline flex-shrink-0">Mark read</button>
+                  <button onClick={() => markRead(n.id)} className="text-xs text-[#1C9AD6] hover:underline shrink-0">Mark read</button>
                 )}
               </div>
             ))}

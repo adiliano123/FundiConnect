@@ -72,7 +72,7 @@ export default function AdminTechniciansPage() {
                   <tr key={t.id} className="hover:bg-gray-50/70">
                     <td className="py-3">
                       <div className="flex items-center gap-2">
-                        <div className="w-7 h-7 rounded-full bg-[#1C9AD6] flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
+                        <div className="w-7 h-7 rounded-full bg-[#1C9AD6] flex items-center justify-center text-white text-xs font-bold shrink-0">
                           {t.user?.name?.charAt(0)}
                         </div>
                         <span className="font-medium text-gray-900">{t.user?.name}</span>

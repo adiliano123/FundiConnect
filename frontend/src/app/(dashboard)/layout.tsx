@@ -22,7 +22,7 @@ function DashboardHeader({ onMenuClick }: { onMenuClick: () => void }) {
     '/dashboard/customer/notifications';
 
   return (
-    <header className="h-16 bg-[#1D234F] flex items-center px-4 gap-4 flex-shrink-0 z-40 shadow-md">
+    <header className="h-16 bg-[#1D234F] flex items-center px-4 gap-4 shrink-0 z-40 shadow-md">
       {/* Mobile menu button */}
       <button
         onClick={onMenuClick}
@@ -33,7 +33,7 @@ function DashboardHeader({ onMenuClick }: { onMenuClick: () => void }) {
       </button>
 
       {/* Logo */}
-      <Link href="/" className="flex items-center gap-2 flex-shrink-0">
+      <Link href="/" className="flex items-center gap-2 shrink-0">
         <div className="w-8 h-8 bg-[#FFD530] rounded-lg flex items-center justify-center">
           <span className="text-[#1D234F] font-black text-sm">FC</span>
         </div>
@@ -50,7 +50,7 @@ function DashboardHeader({ onMenuClick }: { onMenuClick: () => void }) {
         </Link>
 
         <Link href={dashboardHref} className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-          <div className="w-8 h-8 rounded-full overflow-hidden bg-[#1C9AD6] flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
+          <div className="w-8 h-8 rounded-full overflow-hidden bg-[#1C9AD6] flex items-center justify-center text-white text-xs font-bold shrink-0">
             {(user?.avatar_url || user?.avatar) ? (
               <img src={user.avatar_url || user.avatar} alt="Avatar" className="w-full h-full object-cover" />
             ) : (

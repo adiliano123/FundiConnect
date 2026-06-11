@@ -143,7 +143,7 @@ export default function TechnicianProfilePage() {
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
           <h2 className="font-bold text-gray-900 mb-4">Profile Photo</h2>
           <div className="flex items-center gap-4">
-            <div className="w-20 h-20 rounded-full overflow-hidden flex-shrink-0 bg-[#1C9AD6] flex items-center justify-center">
+            <div className="w-20 h-20 rounded-full overflow-hidden shrink-0 bg-[#1C9AD6] flex items-center justify-center">
               {(technician?.user?.avatar_url || technician?.user?.avatar) ? (
                 <img src={technician.user.avatar_url || technician.user.avatar} alt="Profile photo" className="w-full h-full object-cover" />
               ) : (

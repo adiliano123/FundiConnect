@@ -74,7 +74,7 @@ function NavLinks({ collapsed, onClose }: { collapsed: boolean; onClose?: () => 
                 : 'text-gray-300 hover:bg-white/10 hover:text-white'
             )}
           >
-            <Icon className="w-[18px] h-[18px] flex-shrink-0" aria-hidden="true" />
+            <Icon className="w-[18px] h-[18px] shrink-0" aria-hidden="true" />
             {!collapsed && <span className="truncate">{label}</span>}
           </Link>
         );
@@ -96,7 +96,7 @@ export default function DashboardSidebar({ mobileOpen, onMobileClose }: Dashboar
       {/* Desktop sidebar */}
       <aside
         className={cn(
-          'hidden md:flex flex-col bg-[#1D234F] text-white flex-shrink-0 transition-all duration-300 border-r border-white/10',
+          'hidden md:flex flex-col bg-[#1D234F] text-white shrink-0 transition-all duration-300 border-r border-white/10',
           collapsed ? 'w-16' : 'w-56'
         )}
       >

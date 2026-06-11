@@ -116,7 +116,7 @@ export default function HeroSection() {
           >
             <div className="flex flex-col sm:flex-row gap-2 bg-white/10 backdrop-blur-xl border border-white/25 rounded-2xl p-2 shadow-2xl shadow-black/50">
               <div className="flex-1 flex items-center gap-3 px-3">
-                <Search className="w-5 h-5 text-white/50 flex-shrink-0" aria-hidden="true" />
+                <Search className="w-5 h-5 text-white/50 shrink-0" aria-hidden="true" />
                 <input
                   type="text"
                   placeholder="What service do you need?"
@@ -135,7 +135,7 @@ export default function HeroSection() {
                 className="px-4 py-2.5 text-white placeholder-white/40 outline-none text-sm bg-transparent"
                 aria-label="Location"
               />
-              <Button type="submit" variant="secondary" className="rounded-xl flex-shrink-0 px-6 font-semibold">
+              <Button type="submit" variant="secondary" className="rounded-xl shrink-0 px-6 font-semibold">
                 Search
               </Button>
             </div>
