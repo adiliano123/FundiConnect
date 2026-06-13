@@ -15,7 +15,7 @@ class BookingStatusMail extends Mailable
 
     private string $emailSubject;
 
-    public function __construct(public Booking $booking, public string $status)
+    public function __construct(public Booking $booking, public string $status, public string $recipient = 'customer')
     {
         $subjects = [
             'accepted'    => "Your Booking #{$booking->booking_number} Was Accepted ✓",
@@ -36,8 +36,9 @@ class BookingStatusMail extends Mailable
     public function content(): Content
     {
         return new Content(view: 'emails.booking.status_update', with: [
-            'booking' => $this->booking,
-            'status'  => $this->status,
+            'booking'   => $this->booking,
+            'status'    => $this->status,
+            'recipient' => $this->recipient,
         ]);
     }
 }

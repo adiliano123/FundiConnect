@@ -5,9 +5,11 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
+use App\Mail\NewUserAdminAlertMail;
 use App\Mail\WelcomeMail;
 use App\Models\Technician;
 use App\Models\User;
+use App\Services\MailService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -30,11 +32,31 @@ class AuthController extends Controller
             Technician::create(['user_id' => $user->id]);
         }
 
-        // Send welcome email (non-blocking — failure won't prevent registration)
+        // Send welcome email via MailService (logged to notification_logs)
         try {
-            Mail::to($user->email)->send(new WelcomeMail($user));
-        } catch (\Throwable) {
-            // log silently, don't fail the registration
+            MailService::send(
+                $user->email,
+                new WelcomeMail($user),
+                'registration', 'customer',
+                null, $user->id
+            );
+        } catch (\Throwable $e) {
+            \Log::error('Welcome email failed', ['user_id' => $user->id, 'error' => $e->getMessage()]);
+        }
+
+        // Notify all admins of new registration
+        try {
+            sleep(1);
+            User::where('role', 'admin')->each(function ($admin) use ($user) {
+                MailService::send(
+                    $admin->email,
+                    new NewUserAdminAlertMail($user),
+                    'registration', 'admin',
+                    null, $admin->id
+                );
+            });
+        } catch (\Throwable $e) {
+            \Log::error('Admin new-user alert failed', ['user_id' => $user->id, 'error' => $e->getMessage()]);
         }
 
         $token = $user->createToken('auth_token')->plainTextToken;

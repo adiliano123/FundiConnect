@@ -16,7 +16,7 @@ class DatabaseSeeder extends Seeder
         // ── Admin ────────────────────────────────────────────────────────
         User::create([
             'name'        => 'Admin User',
-            'email'       => 'admin@fundiconnect.co.tz',
+            'email'       => 'adilianonathanael@gmail.com',
             'password'    => Hash::make('password'),
             'role'        => 'admin',
             'phone'       => '+255700000001',

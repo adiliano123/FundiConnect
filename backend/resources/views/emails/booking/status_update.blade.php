@@ -76,7 +76,7 @@
 
     <div class="body">
       <p style="font-size:15px;color:#111827;margin-bottom:16px;">
-        Hi <strong>{{ $booking->customer->name }}</strong>,
+        Hi <strong>{{ $recipient === 'technician' ? $booking->technician->user->name : $booking->customer->name }}</strong>,
       </p>
 
       @if($status === 'accepted')

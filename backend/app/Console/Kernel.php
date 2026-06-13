@@ -15,7 +15,17 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
+        // Restart queue worker every minute to ensure it's always running
+        $schedule->command('queue:work --tries=3 --timeout=60 --stop-when-empty')
+                 ->everyMinute()
+                 ->withoutOverlapping()
+                 ->runInBackground();
+
+        // Clean up old failed jobs weekly
+        $schedule->command('queue:flush')->weekly();
+
+        // Prune old notification logs older than 90 days
+        $schedule->command('model:prune')->daily();
     }
 
     /**

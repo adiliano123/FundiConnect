@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Mail\WithdrawalRequestedMail;
+use App\Models\User;
 use App\Models\Wallet;
 use App\Models\WithdrawalRequest;
+use App\Services\MailService;
 use App\Services\PaymentService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -66,6 +69,26 @@ class WithdrawalController extends Controller
             'bank_name'      => $validated['bank_name'] ?? null,
             'status'         => 'pending',
         ]);
+
+        $withdrawal->load('technician.user');
+
+        // Notify technician
+        MailService::send(
+            $request->user()->email,
+            new WithdrawalRequestedMail($withdrawal, 'technician'),
+            'withdrawal_requested', 'technician',
+            null, $request->user()->id
+        );
+
+        // Notify all admins
+        User::where('role', 'admin')->each(function ($admin) use ($withdrawal) {
+            MailService::send(
+                $admin->email,
+                new WithdrawalRequestedMail($withdrawal, 'admin'),
+                'withdrawal_requested', 'admin',
+                null, $admin->id
+            );
+        });
 
         return response()->json([
             'message' => 'Withdrawal request submitted',

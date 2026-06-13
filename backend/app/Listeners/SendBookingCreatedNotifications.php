@@ -4,6 +4,7 @@ namespace App\Listeners;
 
 use App\Events\BookingCreated;
 use App\Mail\BookingConfirmedMail;
+use App\Mail\NewBookingAdminAlertMail;
 use App\Mail\NewBookingRequestMail;
 use App\Models\User;
 use App\Notifications\BookingStatusNotification;
@@ -27,6 +28,8 @@ class SendBookingCreatedNotifications implements ShouldQueue
             $booking, $booking->customer->id
         );
 
+        sleep(1);
+
         // 2. New request email → technician
         MailService::send(
             $booking->technician->user->email,
@@ -35,14 +38,17 @@ class SendBookingCreatedNotifications implements ShouldQueue
             $booking, $booking->technician->user->id
         );
 
-        // 3. Alert → all admins
+        sleep(1);
+
+        // 3. Alert → all admins (dedicated admin template)
         User::where('role', 'admin')->each(function ($admin) use ($booking) {
             MailService::send(
                 $admin->email,
-                new NewBookingRequestMail($booking),
+                new NewBookingAdminAlertMail($booking),
                 'new_booking', 'admin',
                 $booking, $admin->id
             );
+            sleep(1);
         });
 
         // 4. In-app notifications

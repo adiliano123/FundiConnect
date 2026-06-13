@@ -15,9 +15,9 @@ use Illuminate\Support\Facades\Log;
  */
 class ZenoPayService
 {
-    private string $apiKey;
-    private string $accountId;
-    private string $secretKey;
+    private ?string $apiKey;
+    private ?string $accountId;
+    private ?string $secretKey;
     private string $baseUrl;
 
     public function __construct()
@@ -25,7 +25,7 @@ class ZenoPayService
         $this->apiKey    = config('services.zenopay.api_key');
         $this->accountId = config('services.zenopay.account_id');
         $this->secretKey = config('services.zenopay.secret_key');
-        $this->baseUrl   = rtrim(config('services.zenopay.base_url'), '/');
+        $this->baseUrl   = rtrim(config('services.zenopay.base_url', 'https://api.zeno.africa'), '/');
     }
 
     /**

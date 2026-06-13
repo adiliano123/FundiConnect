@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\API\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Mail\TechnicianVerificationMail;
 use App\Models\Technician;
 use App\Models\User;
+use App\Services\MailService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -51,6 +53,17 @@ class UserManagementController extends Controller
             'rejection_reason'    => $validated['rejection_reason'] ?? null,
         ]);
         $technician->user->update(['is_verified' => $validated['status'] === 'verified']);
+
+        // Notify technician by email
+        $technician->load('user');
+        MailService::send(
+            $technician->user->email,
+            new TechnicianVerificationMail($technician),
+            'technician_' . $validated['status'],
+            'technician',
+            null,
+            $technician->user->id
+        );
 
         return response()->json(['message' => 'Technician verification updated', 'data' => $technician]);
     }

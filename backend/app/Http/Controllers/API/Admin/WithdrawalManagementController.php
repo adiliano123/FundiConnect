@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\API\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Mail\WithdrawalStatusMail;
 use App\Models\WithdrawalRequest;
+use App\Services\MailService;
 use App\Services\PaymentService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -54,6 +56,14 @@ class WithdrawalManagementController extends Controller
             'admin_notes'  => $request->admin_notes,
         ]);
 
+        $withdrawal->load('technician.user');
+        MailService::send(
+            $withdrawal->technician->user->email,
+            new WithdrawalStatusMail($withdrawal),
+            'withdrawal_approved', 'technician',
+            null, $withdrawal->technician->user->id
+        );
+
         return response()->json([
             'message' => 'Withdrawal approved and processed',
             'data'    => $withdrawal->fresh()->load('technician.user'),
@@ -77,6 +87,14 @@ class WithdrawalManagementController extends Controller
             'processed_at' => now(),
             'admin_notes'  => $request->admin_notes,
         ]);
+
+        $withdrawal->load('technician.user');
+        MailService::send(
+            $withdrawal->technician->user->email,
+            new WithdrawalStatusMail($withdrawal),
+            'withdrawal_rejected', 'technician',
+            null, $withdrawal->technician->user->id
+        );
 
         return response()->json([
             'message' => 'Withdrawal rejected',

@@ -41,6 +41,8 @@ class HandlePaymentProcessed implements ShouldQueue
         );
         $payment->customer->notify(new PaymentNotification($payment, 'customer'));
 
+        sleep(1);
+
         // Technician earnings alert
         MailService::send(
             $payment->technician->user->email,
@@ -49,6 +51,8 @@ class HandlePaymentProcessed implements ShouldQueue
             $payment->booking, $payment->technician->user->id
         );
         $payment->technician->user->notify(new PaymentNotification($payment, 'technician'));
+
+        sleep(1);
 
         // Admin alert
         User::where('role', 'admin')->each(function (User $admin) use ($payment) {
@@ -59,6 +63,7 @@ class HandlePaymentProcessed implements ShouldQueue
                 $payment->booking, $admin->id
             );
             $admin->notify(new PaymentNotification($payment, 'admin'));
+            sleep(1);
         });
     }
 

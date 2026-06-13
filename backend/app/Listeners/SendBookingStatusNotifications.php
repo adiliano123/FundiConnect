@@ -37,7 +37,7 @@ class SendBookingStatusNotifications implements ShouldQueue
     {
         MailService::send(
             $booking->customer->email,
-            new BookingStatusMail($booking, $status),
+            new BookingStatusMail($booking, $status, 'customer'),
             $status, 'customer',
             $booking, $booking->customer->id
         );
@@ -48,7 +48,7 @@ class SendBookingStatusNotifications implements ShouldQueue
     {
         MailService::send(
             $booking->technician->user->email,
-            new BookingStatusMail($booking, $status),
+            new BookingStatusMail($booking, $status, 'technician'),
             $status, 'technician',
             $booking, $booking->technician->user->id
         );

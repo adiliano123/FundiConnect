@@ -3,8 +3,12 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Mail\ComplaintReceivedMail;
+use App\Mail\ComplaintResolvedMail;
 use App\Models\Booking;
 use App\Models\Complaint;
+use App\Models\User;
+use App\Services\MailService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -30,6 +34,26 @@ class ComplaintController extends Controller
             'complainant_id' => $user->id,
             'respondent_id'  => $respondentId,
         ]));
+
+        $complaint->load(['complainant', 'respondent', 'booking']);
+
+        // Email complainant (acknowledgement)
+        MailService::send(
+            $user->email,
+            new ComplaintReceivedMail($complaint, 'complainant'),
+            'complaint_submitted', 'customer',
+            null, $user->id
+        );
+
+        // Email all admins
+        User::where('role', 'admin')->each(function ($admin) use ($complaint) {
+            MailService::send(
+                $admin->email,
+                new ComplaintReceivedMail($complaint, 'admin'),
+                'complaint_submitted', 'admin',
+                null, $admin->id
+            );
+        });
 
         return response()->json(['message' => 'Complaint submitted', 'data' => $complaint], 201);
     }
@@ -59,6 +83,24 @@ class ComplaintController extends Controller
             'resolved_by' => $request->user()->id,
             'resolved_at' => now(),
         ]));
+
+        $complaint->load(['complainant', 'respondent', 'booking']);
+
+        // Email the complainant about resolution
+        MailService::send(
+            $complaint->complainant->email,
+            new ComplaintResolvedMail($complaint),
+            'complaint_resolved', 'customer',
+            null, $complaint->complainant_id
+        );
+
+        // Email the respondent about resolution
+        MailService::send(
+            $complaint->respondent->email,
+            new ComplaintResolvedMail($complaint),
+            'complaint_resolved', 'respondent',
+            null, $complaint->respondent_id
+        );
 
         return response()->json(['message' => 'Complaint resolved', 'data' => $complaint]);
     }
