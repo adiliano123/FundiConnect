@@ -64,8 +64,9 @@ function LoginForm() {
     try {
       await login(data.email, data.password);
       toast.success('Welcome back!');
-    } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Login failed');
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { message?: string } } };
+      toast.error(error.response?.data?.message || 'Login failed');
     }
   };
 
@@ -147,7 +148,7 @@ function LoginForm() {
             FUNDICONNECT PLATFORM
           </p>
           <h2 className="text-4xl font-extrabold text-white leading-tight mb-4">
-            Tanzania's Marketplace for Skilled Technicians
+            Tanzania&apos;s Marketplace for Skilled Technicians
           </h2>
           <p className="text-gray-400 text-sm leading-relaxed mb-10">
             Book verified technicians, process payments via mobile money or card,
