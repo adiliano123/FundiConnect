@@ -48,7 +48,7 @@ export default function FeaturedTechnicians() {
               >
                 <div className="p-6">
                   <div className="flex items-start justify-between mb-4">
-                    <div className="w-14 h-14 rounded-full bg-gradient-to-br from-[#1C9AD6] to-[#1D234F] flex items-center justify-center text-white text-xl font-bold shadow-md">
+                    <div className="w-14 h-14 rounded-full bg-linear-to-br from-[#1C9AD6] to-[#1D234F] flex items-center justify-center text-white text-xl font-bold shadow-md">
                       {tech.user?.name?.charAt(0).toUpperCase()}
                     </div>
                     <div className="flex items-center gap-1 text-xs text-[#59BD7B] font-semibold bg-green-50 px-2 py-1 rounded-full border border-green-100">

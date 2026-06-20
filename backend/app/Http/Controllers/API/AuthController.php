@@ -14,6 +14,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
@@ -29,34 +30,47 @@ class AuthController extends Controller
 
         // If registering as a technician, create technician profile
         if ($user->role === 'technician') {
-            Technician::create(['user_id' => $user->id]);
+            Technician::create([
+                'user_id' => $user->id
+            ]);
         }
 
-        // Send welcome email via MailService (logged to notification_logs)
+        // Send welcome email
         try {
             MailService::send(
                 $user->email,
                 new WelcomeMail($user),
-                'registration', 'customer',
-                null, $user->id
+                'registration',
+                'customer',
+                null,
+                $user->id
             );
         } catch (\Throwable $e) {
-            \Log::error('Welcome email failed', ['user_id' => $user->id, 'error' => $e->getMessage()]);
+            Log::error('Welcome email failed', [
+                'user_id' => $user->id,
+                'error'   => $e->getMessage(),
+            ]);
         }
 
-        // Notify all admins of new registration
+        // Notify admins about new registration
         try {
             sleep(1);
+
             User::where('role', 'admin')->each(function ($admin) use ($user) {
                 MailService::send(
                     $admin->email,
                     new NewUserAdminAlertMail($user),
-                    'registration', 'admin',
-                    null, $admin->id
+                    'registration',
+                    'admin',
+                    null,
+                    $admin->id
                 );
             });
         } catch (\Throwable $e) {
-            \Log::error('Admin new-user alert failed', ['user_id' => $user->id, 'error' => $e->getMessage()]);
+            Log::error('Admin new-user alert failed', [
+                'user_id' => $user->id,
+                'error'   => $e->getMessage(),
+            ]);
         }
 
         $token = $user->createToken('auth_token')->plainTextToken;
@@ -73,14 +87,21 @@ class AuthController extends Controller
         $user = User::where('email', $request->email)->first();
 
         if (!$user || !Hash::check($request->password, $user->password)) {
-            return response()->json(['message' => 'Invalid credentials'], 401);
+            return response()->json([
+                'message' => 'Invalid credentials'
+            ], 401);
         }
 
         if (!$user->is_active) {
-            return response()->json(['message' => 'Your account has been suspended'], 403);
+            return response()->json([
+                'message' => 'Your account has been suspended'
+            ], 403);
         }
 
-        $user->update(['last_login_at' => now()]);
+        $user->update([
+            'last_login_at' => now()
+        ]);
+
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
@@ -93,13 +114,19 @@ class AuthController extends Controller
     public function logout(Request $request): JsonResponse
     {
         $request->user()->currentAccessToken()->delete();
-        return response()->json(['message' => 'Logged out successfully']);
+
+        return response()->json([
+            'message' => 'Logged out successfully'
+        ]);
     }
 
     public function me(Request $request): JsonResponse
     {
         $user = $request->user()->load('technician');
-        return response()->json(['user' => $this->formatUser($user)]);
+
+        return response()->json([
+            'user' => $this->formatUser($user)
+        ]);
     }
 
     private function formatUser(User $user): array

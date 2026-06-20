@@ -68,7 +68,7 @@ export default function HowItWorks() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 relative">
           {/* Connector line */}
           <div
-            className="hidden lg:block absolute top-12 left-[12.5%] right-[12.5%] h-px bg-gradient-to-r from-[#1C9AD6] via-[#FFD530] to-[#59BD7B] opacity-30"
+            className="hidden lg:block absolute top-12 left-[12.5%] right-[12.5%] h-px bg-linear-to-r from-[#1C9AD6] via-[#FFD530] to-[#59BD7B] opacity-30"
             aria-hidden="true"
           />
 
@@ -90,7 +90,7 @@ export default function HowItWorks() {
                 </div>
               </div>
               <h3 className="text-sm font-bold text-gray-900 mb-1">{title}</h3>
-              <p className="text-xs text-gray-500 leading-relaxed max-w-[180px] mx-auto">{description}</p>
+              <p className="text-xs text-gray-500 leading-relaxed max-w-45 mx-auto">{description}</p>
             </motion.div>
           ))}
         </div>

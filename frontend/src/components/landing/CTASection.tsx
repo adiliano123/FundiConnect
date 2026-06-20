@@ -10,7 +10,7 @@ export default function CTASection() {
       aria-labelledby="cta-title"
     >
       {/* Gradient backdrop */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#1C9AD6]/30 via-[#1D234F] to-[#0a0f2e]" aria-hidden="true" />
+      <div className="absolute inset-0 bg-linear-to-br from-[#1C9AD6]/30 via-[#1D234F] to-[#0a0f2e]" aria-hidden="true" />
 
       {/* Blobs */}
       <div className="absolute inset-0 pointer-events-none" aria-hidden="true">

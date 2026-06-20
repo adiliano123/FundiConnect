@@ -105,6 +105,7 @@ export default function PaymentModal({ booking, onClose, onSuccess }: Props) {
         setStatusMsg('Processing card payment…');
         setStep('polling');
       }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
       setStep('form');
       toast.error(e.response?.data?.message || 'Failed to initiate payment');
@@ -224,7 +225,7 @@ export default function PaymentModal({ booking, onClose, onSuccess }: Props) {
                 Checking payment status… ({Math.min(pollCount * 5, MAX_POLLS * 5)}s)
               </div>
               <button onClick={onClose} className="text-xs text-gray-400 hover:text-gray-600 underline mt-2">
-                I'll check later
+                I&apos;ll check later
               </button>
             </div>
           )}

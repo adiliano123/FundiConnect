@@ -67,7 +67,7 @@ export default function HeroSection() {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 1 }}
-          className={`absolute inset-0 bg-gradient-to-br ${slide.gradient}`}
+          className={`absolute inset-0 bg-linear-to-br ${slide.gradient}`}
           aria-hidden="true"
         />
       </AnimatePresence>
@@ -81,7 +81,7 @@ export default function HeroSection() {
         <motion.div
           animate={{ scale: [1, 1.2, 1], opacity: [0.15, 0.25, 0.15] }}
           transition={{ duration: 10, repeat: Infinity, delay: 2 }}
-          className="absolute bottom-20 left-10 w-[500px] h-[500px] bg-[#FFD530]/10 rounded-full blur-3xl"
+          className="absolute bottom-20 left-10 w-125 h-125 bg-[#FFD530]/10 rounded-full blur-3xl"
         />
       </div>
 
