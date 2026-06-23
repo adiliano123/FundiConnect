@@ -56,11 +56,16 @@ const features = [
 
 export default function WhyChoose() {
   return (
-    <section className="py-14 bg-[#0a0f2e] relative overflow-hidden" aria-labelledby="why-title">
-      <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
-        <div className="absolute top-20 left-20 w-72 h-72 bg-[#1C9AD6]/8 rounded-full blur-3xl" />
-        <div className="absolute bottom-20 right-20 w-72 h-72 bg-[#59BD7B]/8 rounded-full blur-3xl" />
-      </div>
+    <section className="py-14 relative overflow-hidden" aria-labelledby="why-title">
+      {/* Background image */}
+      <img
+        src="/images/why-choose-bg.jpg"
+        alt=""
+        aria-hidden="true"
+        className="absolute inset-0 w-full h-full object-cover object-center"
+      />
+      {/* Dark overlay so text stays readable */}
+      <div className="absolute inset-0 bg-black/65" aria-hidden="true" />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div

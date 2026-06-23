@@ -3,7 +3,6 @@ import FeaturedTechnicians from '@/components/landing/FeaturedTechnicians';
 import HeroSection from '@/components/landing/HeroSection';
 import HowItWorks from '@/components/landing/HowItWorks';
 import ServicesSection from '@/components/landing/ServicesSection';
-import StatsSection from '@/components/landing/StatsSection';
 import Testimonials from '@/components/landing/Testimonials';
 import WhyChoose from '@/components/landing/WhyChoose';
 
@@ -15,7 +14,6 @@ export default function HomePage() {
       <HowItWorks />
       <FeaturedTechnicians />
       <WhyChoose />
-      <StatsSection />
       <Testimonials />
       <CTASection />
     </>

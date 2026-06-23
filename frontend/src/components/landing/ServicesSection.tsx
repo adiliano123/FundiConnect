@@ -1,45 +1,19 @@
 'use client';
 
-import { categoryService } from '@/services/category.service';
-import { Category } from '@/types';
 import { motion } from 'framer-motion';
 import { Camera, Hammer, Monitor, Paintbrush, Wind, Wrench, Zap } from 'lucide-react';
-import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
 
-// Map category slugs to local images
-const serviceImages: Record<string, string> = {
-  electrical:        '/images/service-electrical.jpg',
-  plumbing:          '/images/service-plumbing.jpg',
-  carpentry:         '/images/service-carpentry.jpg',
-  painting:          '/images/service-painting.jpg',
-  'ac-repair':       '/images/service-ac-repair.jpg',
-  mechanics:         '/images/service-mechanics.jpg',
-  'computer-repair': '/images/service-computer-repair.jpg',
-  'cctv-installation': '/images/service-cctv.jpg',
-};
-
-const iconMap: Record<string, React.ElementType> = {
-  zap: Zap,
-  droplets: Wind,
-  hammer: Hammer,
-  paintbrush: Paintbrush,
-  wind: Wind,
-  wrench: Wrench,
-  monitor: Monitor,
-  camera: Camera,
-};
-
-const colorClasses = [
-  { bg: 'bg-blue-500/15', text: 'text-blue-400', border: 'border-blue-400/20', glow: 'group-hover:shadow-blue-500/20' },
-  { bg: 'bg-cyan-500/15', text: 'text-cyan-400', border: 'border-cyan-400/20', glow: 'group-hover:shadow-cyan-500/20' },
-  { bg: 'bg-amber-500/15', text: 'text-amber-400', border: 'border-amber-400/20', glow: 'group-hover:shadow-amber-500/20' },
-  { bg: 'bg-orange-500/15', text: 'text-orange-400', border: 'border-orange-400/20', glow: 'group-hover:shadow-orange-500/20' },
-  { bg: 'bg-green-500/15', text: 'text-green-400', border: 'border-green-400/20', glow: 'group-hover:shadow-green-500/20' },
-  { bg: 'bg-red-500/15', text: 'text-red-400', border: 'border-red-400/20', glow: 'group-hover:shadow-red-500/20' },
-  { bg: 'bg-purple-500/15', text: 'text-purple-400', border: 'border-purple-400/20', glow: 'group-hover:shadow-purple-500/20' },
-  { bg: 'bg-pink-500/15', text: 'text-pink-400', border: 'border-pink-400/20', glow: 'group-hover:shadow-pink-500/20' },
+// Static service data — images always show, no API needed
+const services = [
+  { name: 'Electrical',       icon: Zap,       image: '/images/service-carpentry.jpg',       color: { bg: 'bg-blue-500/15',   text: 'text-blue-400',   border: 'border-blue-400/20',   glow: 'group-hover:shadow-blue-500/20'   }, search: 'Electrical'       },
+  { name: 'Plumbing',         icon: Wind,       image: '/images/service-electrical.jpg',      color: { bg: 'bg-cyan-500/15',   text: 'text-cyan-400',   border: 'border-cyan-400/20',   glow: 'group-hover:shadow-cyan-500/20'   }, search: 'Plumbing'         },
+  { name: 'Carpentry',        icon: Hammer,     image: '/images/service-plumbing.jpg',        color: { bg: 'bg-amber-500/15',  text: 'text-amber-400',  border: 'border-amber-400/20',  glow: 'group-hover:shadow-amber-500/20'  }, search: 'Carpentry'        },
+  { name: 'Painting',         icon: Paintbrush, image: '/images/service-painting-new.jpg',    color: { bg: 'bg-orange-500/15', text: 'text-orange-400', border: 'border-orange-400/20', glow: 'group-hover:shadow-orange-500/20' }, search: 'Painting'         },
+  { name: 'AC Repair',        icon: Wind,       image: '/images/service-ac-repair-new.jpg',   color: { bg: 'bg-green-500/15',  text: 'text-green-400',  border: 'border-green-400/20',  glow: 'group-hover:shadow-green-500/20'  }, search: 'AC Repair'        },
+  { name: 'Mechanics',        icon: Wrench,     image: '/images/service-mechanics.jpg',       color: { bg: 'bg-red-500/15',    text: 'text-red-400',    border: 'border-red-400/20',    glow: 'group-hover:shadow-red-500/20'    }, search: 'Mechanics'        },
+  { name: 'Computer Repair',  icon: Monitor,    image: '/images/service-computer-repair.jpg', color: { bg: 'bg-purple-500/15', text: 'text-purple-400', border: 'border-purple-400/20', glow: 'group-hover:shadow-purple-500/20' }, search: 'Computer Repair'  },
+  { name: 'CCTV Installation',icon: Camera,     image: '/images/service-cctv-new.jpg',        color: { bg: 'bg-pink-500/15',   text: 'text-pink-400',   border: 'border-pink-400/20',   glow: 'group-hover:shadow-pink-500/20'   }, search: 'CCTV'             },
 ];
 
 const container = {
@@ -49,16 +23,10 @@ const container = {
 
 const item = {
   hidden: { opacity: 0, y: 24 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+  show:   { opacity: 1, y: 0, transition: { duration: 0.5 } },
 };
 
 export default function ServicesSection() {
-  const [categories, setCategories] = useState<Category[]>([]);
-
-  useEffect(() => {
-    categoryService.getAll().then(({ data }) => setCategories(data)).catch(() => {});
-  }, []);
-
   return (
     <section className="relative py-14 bg-[#0a0f2e] overflow-hidden" aria-labelledby="services-title">
       <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
@@ -89,44 +57,31 @@ export default function ServicesSection() {
           viewport={{ once: true }}
           className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5"
         >
-          {categories.map((cat, i) => {
-            const Icon = iconMap[cat.icon || ''] || Wrench;
-            const colors = colorClasses[i % colorClasses.length];
+          {services.map((svc) => {
+            const Icon = svc.icon;
+            const c = svc.color;
             return (
-              <motion.div key={cat.id} variants={item}>
+              <motion.div key={svc.name} variants={item}>
                 <Link
-                  href={`/technicians?category_id=${cat.id}`}
-                  className={`group block bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl overflow-hidden hover:bg-white/10 hover:-translate-y-1 hover:border-white/25 transition-all duration-300 text-center shadow-lg hover:shadow-xl ${colors.glow}`}
+                  href={`/technicians?search=${encodeURIComponent(svc.search)}`}
+                  className={`group block bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl overflow-hidden hover:bg-white/10 hover:-translate-y-1 hover:border-white/25 transition-all duration-300 text-center shadow-lg hover:shadow-xl ${c.glow}`}
                 >
-                  {/* Service image — no dark overlay so it shows clearly */}
-                  {serviceImages[cat.slug] && (
-                    <div className="relative w-full h-40 overflow-hidden">
-                      <Image
-                        src={serviceImages[cat.slug]}
-                        alt={cat.name}
-                        fill
-                        sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                        className="object-cover group-hover:scale-105 transition-transform duration-500"
-                        loading="lazy"
-                      />
-                      {/* Only a tiny gradient at the very bottom to blend into the card */}
-                      <div className="absolute inset-x-0 bottom-0 h-6 bg-gradient-to-t from-[#0a0f2e]/50 to-transparent" />
-                    </div>
-                  )}
+                  {/* Service image — always visible, no API dependency */}
+                  <div className="w-full h-40 overflow-hidden">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={svc.image}
+                      alt={svc.name}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      loading="lazy"
+                    />
+                  </div>
 
                   <div className="p-5">
-                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3 border ${colors.bg} ${colors.border} group-hover:scale-110 transition-transform duration-300`}>
-                      <Icon className={`w-6 h-6 ${colors.text}`} aria-hidden="true" />
+                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3 border ${c.bg} ${c.border} group-hover:scale-110 transition-transform duration-300`}>
+                      <Icon className={`w-6 h-6 ${c.text}`} aria-hidden="true" />
                     </div>
-                    <h3 className="font-semibold text-white text-sm mb-1">{cat.name}</h3>
-                    {cat.description && (
-                      <p className="text-xs text-gray-500 line-clamp-2 leading-relaxed">{cat.description}</p>
-                    )}
-                    {cat.technicians_count !== undefined && (
-                      <span className="mt-2 inline-block text-xs text-[#1C9AD6] font-medium">
-                        {cat.technicians_count} technicians
-                      </span>
-                    )}
+                    <h3 className="font-semibold text-white text-sm">{svc.name}</h3>
                   </div>
                 </Link>
               </motion.div>

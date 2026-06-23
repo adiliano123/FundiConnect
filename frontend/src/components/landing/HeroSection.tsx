@@ -2,8 +2,6 @@
 
 import Button from '@/components/ui/Button';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Search } from 'lucide-react';
-import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
@@ -12,36 +10,30 @@ const slides = [
     headline: 'Find Trusted',
     highlight: 'Electricians',
     subtitle: 'Expert wiring, panel upgrades, and emergency electrical repairs.',
-    gradient: 'from-blue-900/80 via-[#1D234F]/70 to-[#0f1535]/90',
     accent: '#1C9AD6',
   },
   {
     headline: 'Book Skilled',
     highlight: 'Plumbers',
     subtitle: 'Pipe repairs, leak fixing, and full plumbing installations.',
-    gradient: 'from-cyan-900/80 via-[#1D234F]/70 to-[#0f1535]/90',
     accent: '#59BD7B',
   },
   {
     headline: 'Hire Expert',
     highlight: 'Carpenters',
     subtitle: 'Custom furniture, door fitting, and woodwork craftsmanship.',
-    gradient: 'from-amber-900/80 via-[#1D234F]/70 to-[#0f1535]/90',
     accent: '#FFD530',
   },
   {
     headline: 'Find Pro',
     highlight: 'Mechanics',
     subtitle: 'Vehicle diagnostics, engine repair, and routine maintenance.',
-    gradient: 'from-red-900/80 via-[#1D234F]/70 to-[#0f1535]/90',
     accent: '#f97316',
   },
 ];
 
 export default function HeroSection() {
   const router = useRouter();
-  const [search, setSearch] = useState('');
-  const [city, setCity] = useState('');
   const [current, setCurrent] = useState(0);
 
   useEffect(() => {
@@ -49,34 +41,24 @@ export default function HeroSection() {
     return () => clearInterval(timer);
   }, []);
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    const params = new URLSearchParams();
-    if (search) params.set('search', search);
-    if (city) params.set('city', city);
-    router.push(`/technicians?${params.toString()}`);
-  };
-
   const slide = slides[current];
 
   return (
-    <section className="relative bg-[#0f1535] overflow-hidden min-h-screen flex items-center" aria-label="Hero">
-      {/* Background image — rendered behind everything */}
-      <Image
+    <section className="relative bg-[#0f1535] min-h-screen flex items-center" aria-label="Hero">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
         src="/images/hero-bg.jpg"
         alt=""
-        fill
-        priority
-        sizes="100vw"
-        className="object-cover object-center z-0"
         aria-hidden="true"
+        className="absolute inset-0 w-full h-full object-cover object-center"
       />
 
-      {/* Single dark overlay — light enough to show the image, dark enough for text */}
-      <div className="absolute inset-0 bg-black/45 z-10" aria-hidden="true" />
+      {/* Overlay to keep text readable */}
+      <div className="absolute inset-0 bg-black/40" aria-hidden="true" />
 
-      <div className="relative z-30 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-28 w-full">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-28 w-full">
         <div className="text-center max-w-4xl mx-auto">
+
           <AnimatePresence mode="wait">
             <motion.div
               key={current}
@@ -97,63 +79,11 @@ export default function HeroSection() {
             </motion.div>
           </AnimatePresence>
 
-          <motion.form
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            onSubmit={handleSearch}
-            className="max-w-2xl mx-auto"
-          >
-            <div className="flex flex-col sm:flex-row gap-2 bg-white/10 backdrop-blur-xl border border-white/25 rounded-2xl p-2 shadow-2xl shadow-black/50">
-              <div className="flex-1 flex items-center gap-3 px-3">
-                <Search className="w-5 h-5 text-white/50 shrink-0" aria-hidden="true" />
-                <input
-                  type="text"
-                  placeholder="What service do you need?"
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  className="flex-1 py-2.5 text-white placeholder-white/40 outline-none text-sm bg-transparent"
-                  aria-label="Search for a service"
-                />
-              </div>
-              <div className="hidden sm:block w-px bg-white/20 self-stretch" aria-hidden="true" />
-              <input
-                type="text"
-                placeholder="City or location"
-                value={city}
-                onChange={(e) => setCity(e.target.value)}
-                className="px-4 py-2.5 text-white placeholder-white/40 outline-none text-sm bg-transparent"
-                aria-label="Location"
-              />
-              <Button type="submit" variant="secondary" className="rounded-xl shrink-0 px-6 font-semibold">
-                Search
-              </Button>
-            </div>
-          </motion.form>
-
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5 }}
-            className="flex flex-wrap justify-center gap-2 mt-5"
-          >
-            {['Electrician', 'Plumber', 'Carpenter', 'AC Repair', 'CCTV', 'Mechanic'].map((tag) => (
-              <button
-                key={tag}
-                type="button"
-                onClick={() => router.push(`/technicians?search=${tag}`)}
-                className="px-3 py-1.5 text-xs text-white/70 bg-white/10 backdrop-blur-sm rounded-full hover:bg-white/20 transition-colors border border-white/15"
-              >
-                {tag}
-              </button>
-            ))}
-          </motion.div>
-
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6 }}
-            className="flex flex-col sm:flex-row justify-center gap-3 mt-8"
+            transition={{ delay: 0.4 }}
+            className="flex flex-col sm:flex-row justify-center gap-3"
           >
             <Button
               onClick={() => router.push('/technicians')}
@@ -177,7 +107,7 @@ export default function HeroSection() {
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8, duration: 0.6 }}
+          transition={{ delay: 0.6, duration: 0.6 }}
           className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-14 max-w-2xl mx-auto"
         >
           {[
