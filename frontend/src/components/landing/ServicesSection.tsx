@@ -4,8 +4,21 @@ import { categoryService } from '@/services/category.service';
 import { Category } from '@/types';
 import { motion } from 'framer-motion';
 import { Camera, Hammer, Monitor, Paintbrush, Wind, Wrench, Zap } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+
+// Map category slugs to local images
+const serviceImages: Record<string, string> = {
+  electrical:        '/images/service-electrical.jpg',
+  plumbing:          '/images/service-plumbing.jpg',
+  carpentry:         '/images/service-carpentry.jpg',
+  painting:          '/images/service-painting.jpg',
+  'ac-repair':       '/images/service-ac-repair.jpg',
+  mechanics:         '/images/service-mechanics.jpg',
+  'computer-repair': '/images/service-computer-repair.jpg',
+  'cctv-installation': '/images/service-cctv.jpg',
+};
 
 const iconMap: Record<string, React.ElementType> = {
   zap: Zap,
@@ -83,20 +96,38 @@ export default function ServicesSection() {
               <motion.div key={cat.id} variants={item}>
                 <Link
                   href={`/technicians?category_id=${cat.id}`}
-                  className={`group block bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 hover:bg-white/10 hover:-translate-y-1 hover:border-white/25 transition-all duration-300 text-center shadow-lg hover:shadow-xl ${colors.glow}`}
+                  className={`group block bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl overflow-hidden hover:bg-white/10 hover:-translate-y-1 hover:border-white/25 transition-all duration-300 text-center shadow-lg hover:shadow-xl ${colors.glow}`}
                 >
-                  <div className={`w-14 h-14 rounded-xl flex items-center justify-center mx-auto mb-4 border ${colors.bg} ${colors.border} group-hover:scale-110 transition-transform duration-300`}>
-                    <Icon className={`w-7 h-7 ${colors.text}`} aria-hidden="true" />
+                  {/* Service image — no dark overlay so it shows clearly */}
+                  {serviceImages[cat.slug] && (
+                    <div className="relative w-full h-40 overflow-hidden">
+                      <Image
+                        src={serviceImages[cat.slug]}
+                        alt={cat.name}
+                        fill
+                        sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                        className="object-cover group-hover:scale-105 transition-transform duration-500"
+                        loading="lazy"
+                      />
+                      {/* Only a tiny gradient at the very bottom to blend into the card */}
+                      <div className="absolute inset-x-0 bottom-0 h-6 bg-gradient-to-t from-[#0a0f2e]/50 to-transparent" />
+                    </div>
+                  )}
+
+                  <div className="p-5">
+                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3 border ${colors.bg} ${colors.border} group-hover:scale-110 transition-transform duration-300`}>
+                      <Icon className={`w-6 h-6 ${colors.text}`} aria-hidden="true" />
+                    </div>
+                    <h3 className="font-semibold text-white text-sm mb-1">{cat.name}</h3>
+                    {cat.description && (
+                      <p className="text-xs text-gray-500 line-clamp-2 leading-relaxed">{cat.description}</p>
+                    )}
+                    {cat.technicians_count !== undefined && (
+                      <span className="mt-2 inline-block text-xs text-[#1C9AD6] font-medium">
+                        {cat.technicians_count} technicians
+                      </span>
+                    )}
                   </div>
-                  <h3 className="font-semibold text-white text-sm mb-1">{cat.name}</h3>
-                  {cat.description && (
-                    <p className="text-xs text-gray-500 line-clamp-2 leading-relaxed">{cat.description}</p>
-                  )}
-                  {cat.technicians_count !== undefined && (
-                    <span className="mt-2 inline-block text-xs text-[#1C9AD6] font-medium">
-                      {cat.technicians_count} technicians
-                    </span>
-                  )}
                 </Link>
               </motion.div>
             );

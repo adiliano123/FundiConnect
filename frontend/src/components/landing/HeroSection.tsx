@@ -3,6 +3,7 @@
 import Button from '@/components/ui/Button';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Search } from 'lucide-react';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
@@ -60,32 +61,21 @@ export default function HeroSection() {
 
   return (
     <section className="relative bg-[#0f1535] overflow-hidden min-h-screen flex items-center" aria-label="Hero">
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={current}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 1 }}
-          className={`absolute inset-0 bg-linear-to-br ${slide.gradient}`}
-          aria-hidden="true"
-        />
-      </AnimatePresence>
+      {/* Background image — rendered behind everything */}
+      <Image
+        src="/images/hero-bg.jpg"
+        alt=""
+        fill
+        priority
+        sizes="100vw"
+        className="object-cover object-center z-0"
+        aria-hidden="true"
+      />
 
-      <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
-        <motion.div
-          animate={{ scale: [1, 1.1, 1], opacity: [0.3, 0.5, 0.3] }}
-          transition={{ duration: 8, repeat: Infinity }}
-          className="absolute top-20 right-10 w-96 h-96 bg-[#1C9AD6]/20 rounded-full blur-3xl"
-        />
-        <motion.div
-          animate={{ scale: [1, 1.2, 1], opacity: [0.15, 0.25, 0.15] }}
-          transition={{ duration: 10, repeat: Infinity, delay: 2 }}
-          className="absolute bottom-20 left-10 w-125 h-125 bg-[#FFD530]/10 rounded-full blur-3xl"
-        />
-      </div>
+      {/* Single dark overlay — light enough to show the image, dark enough for text */}
+      <div className="absolute inset-0 bg-black/45 z-10" aria-hidden="true" />
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-28 w-full">
+      <div className="relative z-30 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-28 w-full">
         <div className="text-center max-w-4xl mx-auto">
           <AnimatePresence mode="wait">
             <motion.div

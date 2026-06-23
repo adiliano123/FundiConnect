@@ -16,10 +16,10 @@ class DatabaseSeeder extends Seeder
         // ── Admin ────────────────────────────────────────────────────────
         User::create([
             'name'        => 'Admin User',
-            'email'       => 'adilianonathanael@gmail.com',
+            'email'       => 'ekxaverysindobewe@gmail.com',
             'password'    => Hash::make('password'),
             'role'        => 'admin',
-            'phone'       => '+255700000001',
+            'phone'       => '+255745290677',
             'city'        => 'Dar es Salaam',
             'country'     => 'Tanzania',
             'is_active'   => true,
