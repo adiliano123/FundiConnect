@@ -1,7 +1,6 @@
-'use client';
-
-import { motion } from 'framer-motion';
 import { BadgeCheck, Clock, CreditCard, HeadphonesIcon, ShieldCheck, Star } from 'lucide-react';
+
+// Server component — no state or hooks needed. Background image uses loading="lazy".
 
 const features = [
   {
@@ -57,23 +56,21 @@ const features = [
 export default function WhyChoose() {
   return (
     <section className="py-14 relative overflow-hidden" aria-labelledby="why-title">
-      {/* Background image */}
+      {/* Background image — lazy loaded, does not block paint */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src="/images/why-choose-bg.jpg"
         alt=""
         aria-hidden="true"
+        loading="lazy"
+        decoding="async"
         className="absolute inset-0 w-full h-full object-cover object-center"
       />
-      {/* Dark overlay so text stays readable */}
+      {/* Dark overlay */}
       <div className="absolute inset-0 bg-black/65" aria-hidden="true" />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-16"
-        >
+        <div className="text-center mb-16">
           <span className="text-[#FFD530] text-sm font-semibold uppercase tracking-widest">Why Us</span>
           <h2 id="why-title" className="text-2xl sm:text-3xl font-extrabold text-white mt-2">
             Why Choose FundiConnect?
@@ -81,16 +78,12 @@ export default function WhyChoose() {
           <p className="text-gray-400 mt-2 max-w-xl mx-auto text-sm leading-relaxed">
             We built the most reliable way to find and book skilled technicians in Tanzania.
           </p>
-        </motion.div>
+        </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {features.map(({ icon: Icon, title, description, color, bg, border }, i) => (
-            <motion.div
+          {features.map(({ icon: Icon, title, description, color, bg, border }) => (
+            <div
               key={title}
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1, duration: 0.5 }}
               className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 hover:bg-white/10 hover:-translate-y-1 transition-all duration-300 group"
             >
               <div className={`w-12 h-12 rounded-xl ${bg} border ${border} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
@@ -98,7 +91,7 @@ export default function WhyChoose() {
               </div>
               <h3 className="text-white font-bold text-base mb-2">{title}</h3>
               <p className="text-gray-400 text-sm leading-relaxed">{description}</p>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>
