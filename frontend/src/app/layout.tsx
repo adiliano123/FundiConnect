@@ -1,10 +1,7 @@
 import { AuthProvider } from '@/context/AuthContext';
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
 import { Toaster } from 'react-hot-toast';
 import './globals.css';
-
-const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: 'FundiConnect – Find Skilled Technicians Near You',
@@ -15,7 +12,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className="font-sans antialiased">
         <AuthProvider>
           {children}
           <Toaster position="top-right" toastOptions={{ duration: 4000 }} />

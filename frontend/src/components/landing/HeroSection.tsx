@@ -50,6 +50,8 @@ export default function HeroSection() {
         src="/images/hero-bg.jpg"
         alt=""
         aria-hidden="true"
+        fetchPriority="high"
+        decoding="async"
         className="absolute inset-0 w-full h-full object-cover object-center"
       />
 
