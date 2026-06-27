@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 'use client';
 
 import Button from '@/components/ui/Button';
@@ -38,6 +39,7 @@ export default function TechnicianProfilePage() {
   const portfolioRef = useRef<HTMLInputElement>(null);
 
   const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<FormData>({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     resolver: zodResolver(schema) as any,
   });
 
@@ -67,6 +69,7 @@ export default function TechnicianProfilePage() {
       // Update user city and technician profile in parallel
       await Promise.all([
         api.put('/profile', { city }),
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         technicianService.updateProfile({ ...technicianData, skills: selectedSkills as any }),
       ]);
       const [techRes, meRes] = await Promise.all([
@@ -134,7 +137,7 @@ export default function TechnicianProfilePage() {
       {/* Verification banner */}
       {technician?.verification_status === 'pending' && (
         <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 mb-6 text-sm text-yellow-800">
-          Your profile is pending verification. You'll start receiving job requests once verified by admin.
+          Your profile is pending verification. You&apos;ll start receiving job requests once verified by admin.
         </div>
       )}
 
@@ -145,6 +148,7 @@ export default function TechnicianProfilePage() {
           <div className="flex items-center gap-4">
             <div className="w-20 h-20 rounded-full overflow-hidden shrink-0 bg-[#1C9AD6] flex items-center justify-center">
               {(technician?.user?.avatar_url || technician?.user?.avatar) ? (
+                 
                 <img src={technician.user.avatar_url || technician.user.avatar} alt="Profile photo" className="w-full h-full object-cover" />
               ) : (
                 <span className="text-white text-3xl font-bold">{technician?.user?.name?.charAt(0)}</span>
@@ -170,6 +174,7 @@ export default function TechnicianProfilePage() {
               type="number"
               min={0}
               max={50}
+              placeholder="e.g. 5"
               error={errors.experience_years?.message}
               {...register('experience_years', { valueAsNumber: true })}
             />
@@ -177,6 +182,7 @@ export default function TechnicianProfilePage() {
               label="Hourly Rate (TZS)"
               type="number"
               min={0}
+              placeholder="e.g. 15000"
               error={errors.hourly_rate?.message}
               {...register('hourly_rate', { valueAsNumber: true })}
             />

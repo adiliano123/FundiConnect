@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable react-hooks/immutability */
 'use client';
 
 import Card from '@/components/ui/Card';
@@ -154,6 +156,7 @@ export default function TechnicianWalletPage() {
                   <input
                     type="text" required={form.method === 'bank'}
                     value={form.bank_name} onChange={e => setForm(f => ({ ...f, bank_name: e.target.value }))}
+                    placeholder="e.g. CRDB Bank"
                     className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#1C9AD6]"
                   />
                 </div>
@@ -166,7 +169,7 @@ export default function TechnicianWalletPage() {
               {submitting ? 'Submitting…' : 'Submit Request'}
             </button>
           </form>
-        </Card>
+        </Card> 
       )}
 
       {/* Withdrawal history */}

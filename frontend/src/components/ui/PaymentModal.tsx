@@ -140,6 +140,7 @@ export default function PaymentModal({ booking, onClose, onSuccess }: Props) {
                 <input
                   type="number" min={100} value={amount}
                   onChange={e => setAmount(Number(e.target.value))}
+                  placeholder="e.g. 50000"
                   className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#1C9AD6]"
                 />
               </div>

@@ -5,6 +5,7 @@ use App\Http\Controllers\API\Admin\RevenueController;
 use App\Http\Controllers\API\Admin\UserManagementController;
 use App\Http\Controllers\API\Admin\WithdrawalManagementController;
 use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\API\PasswordResetController;
 use App\Http\Controllers\API\BookingController;
 use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\ComplaintController;
@@ -23,8 +24,10 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 Route::prefix('auth')->group(function () {
-    Route::post('/register', [AuthController::class, 'register']);
-    Route::post('/login',    [AuthController::class, 'login']);
+    Route::post('/register',        [AuthController::class, 'register']);
+    Route::post('/login',           [AuthController::class, 'login']);
+    Route::post('/forgot-password', [PasswordResetController::class, 'forgotPassword']);
+    Route::post('/reset-password',  [PasswordResetController::class, 'resetPassword']);
 });
 
 // Public: Categories & Technicians
