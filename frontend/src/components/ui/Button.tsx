@@ -8,17 +8,17 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variants = {
-  primary:   'bg-[#1D234F] text-white hover:bg-[#161b3d] focus:ring-[#1D234F]',
+  primary:   'bg-[#1D234F] text-white hover:bg-[#161b3d] focus:ring-[#1D234F] dark:bg-indigo-700 dark:hover:bg-indigo-600',
   secondary: 'bg-[#FFD530] text-[#1D234F] font-semibold hover:bg-yellow-400 focus:ring-yellow-400',
-  outline:   'border-2 border-[#1D234F] text-[#1D234F] hover:bg-[#1D234F] hover:text-white',
-  ghost:     'text-[#1D234F] hover:bg-gray-100',
+  outline:   'border-2 border-[#1D234F] text-[#1D234F] hover:bg-[#1D234F] hover:text-white dark:border-gray-500 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:border-gray-400 dark:hover:text-white',
+  ghost:     'text-[#1D234F] hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800',
   danger:    'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500',
 };
 
 const sizes = {
-  sm:  'px-3 py-1.5 text-sm',
-  md:  'px-4 py-2 text-sm',
-  lg:  'px-6 py-3 text-base',
+  sm: 'px-3 py-1.5 text-sm',
+  md: 'px-4 py-2 text-sm',
+  lg: 'px-6 py-3 text-base',
 };
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
@@ -28,7 +28,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       disabled={disabled || isLoading}
       className={cn(
         'inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-all duration-200',
-        'focus:outline-none focus:ring-2 focus:ring-offset-2',
+        'focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-gray-900',
         'disabled:opacity-60 disabled:cursor-not-allowed',
         variants[variant],
         sizes[size],

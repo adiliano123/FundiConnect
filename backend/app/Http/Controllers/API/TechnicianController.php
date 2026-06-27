@@ -26,8 +26,12 @@ class TechnicianController extends Controller
 
         if ($request->search) {
             $search = $request->search;
-            $query->whereHas('user', fn($q) => $q->where('name', 'like', "%$search%"))
-                  ->orWhere('bio', 'like', "%$search%");
+            $query->where(function ($q) use ($search) {
+                $q->whereHas('user', fn($u) => $u->where('name', 'like', "%$search%"))
+                  ->orWhere('bio', 'like', "%$search%")
+                  ->orWhereHas('category', fn($c) => $c->where('name', 'like', "%$search%"))
+                  ->orWhereHas('skills', fn($s) => $s->where('name', 'like', "%$search%"));
+            });
         }
 
         if ($request->available) {

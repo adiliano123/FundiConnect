@@ -1,6 +1,7 @@
 'use client';
 
 import { useAuth } from '@/context/AuthContext';
+import ThemeToggle from '@/components/ui/ThemeToggle';
 import { Bell, ChevronDown, Menu, X } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
@@ -20,7 +21,6 @@ const serviceCategories = [
 const navLinks = [
   { href: '/', label: 'Home' },
   { href: '/technicians', label: 'Technicians' },
-  { href: '/how-it-works', label: 'How It Works' },
 ];
 
 export default function Navbar() {
@@ -67,39 +67,56 @@ export default function Navbar() {
             ))}
 
             {/* Services dropdown */}
-            <div className="relative">
+            <div
+              className="relative"
+              onMouseEnter={() => setServicesOpen(true)}
+              onMouseLeave={() => setServicesOpen(false)}
+            >
               <button
                 onClick={() => setServicesOpen((o) => !o)}
-                onBlur={() => setTimeout(() => setServicesOpen(false), 150)}
                 className={`flex items-center gap-1 text-sm font-medium transition-colors ${
-                  pathname === '/services' ? 'text-[#FFD530]' : 'text-gray-300 hover:text-white'
+                  pathname.startsWith('/technicians') ? 'text-[#FFD530]' : 'text-gray-300 hover:text-white'
                 }`}
-                aria-haspopup="true"
+                aria-haspopup="listbox"
                 aria-expanded={servicesOpen}
               >
                 Services
-                <ChevronDown className={`w-4 h-4 transition-transform ${servicesOpen ? 'rotate-180' : ''}`} />
+                <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${servicesOpen ? 'rotate-180' : ''}`} />
               </button>
 
               {servicesOpen && (
-                <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-100 py-1 z-50">
+                <div
+                  role="listbox"
+                  className="absolute top-full left-0 mt-1 w-52 bg-[#1D234F] border border-white/15 rounded-xl shadow-2xl py-1.5 z-50 overflow-hidden"
+                >
                   {serviceCategories.map((cat) => (
                     <Link
                       key={cat}
                       href={`/technicians?search=${encodeURIComponent(cat)}`}
                       onClick={() => setServicesOpen(false)}
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#1C9AD6] transition-colors"
+                      className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-300 hover:bg-white/10 hover:text-white transition-colors"
                     >
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#1C9AD6] flex-shrink-0" aria-hidden="true" />
                       {cat}
                     </Link>
                   ))}
+                  <div className="border-t border-white/10 mt-1 pt-1">
+                    <Link
+                      href="/technicians"
+                      onClick={() => setServicesOpen(false)}
+                      className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-[#FFD530] hover:bg-white/10 transition-colors font-medium"
+                    >
+                      View all technicians →
+                    </Link>
+                  </div>
                 </div>
               )}
             </div>
           </div>
 
           {/* Auth Actions */}
-          <div className="hidden md:flex items-center gap-3">
+          <div className="hidden md:flex items-center gap-2">
+            <ThemeToggle />
             {user ? (
               <>
                 <Link href="/notifications" aria-label="Notifications">
@@ -133,14 +150,17 @@ export default function Navbar() {
           </div>
 
           {/* Mobile toggle */}
-          <button
-            className="md:hidden text-gray-300 hover:text-white p-2"
-            onClick={() => setMobileOpen(!mobileOpen)}
-            aria-label="Toggle menu"
-            aria-expanded={mobileOpen}
-          >
-            {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
+          <div className="md:hidden flex items-center gap-1">
+            <ThemeToggle />
+            <button
+              className="text-gray-300 hover:text-white p-2"
+              onClick={() => setMobileOpen(!mobileOpen)}
+              aria-label="Toggle menu"
+              aria-expanded={mobileOpen}
+            >
+              {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -171,6 +191,23 @@ export default function Navbar() {
             </div>
           </div>
 
+          <hr className="border-white/10" />
+          {user ? (
+            <>
+              <Link href={dashboardHref} onClick={() => setMobileOpen(false)}
+                className="block text-sm text-white py-2">Dashboard</Link>
+              <button onClick={handleLogout} className="block text-sm text-red-400 py-2 w-full text-left">Logout</button>
+            </>
+          ) : (
+            <div className="flex flex-col gap-2 pt-2">
+              <Link href="/auth/login" onClick={() => setMobileOpen(false)}>
+                <Button variant="outline" size="sm" className="w-full border-gray-400 text-gray-200">Login</Button>
+              </Link>
+              <Link href="/auth/register" onClick={() => setMobileOpen(false)}>
+                <Button variant="secondary" size="sm" className="w-full">Get Started</Button>
+              </Link>
+            </div>
+          )}
           <hr className="border-white/10" />
           {user ? (
             <>

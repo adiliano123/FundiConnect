@@ -34,12 +34,12 @@ class PasswordResetController extends Controller
         }
 
         // Delete any existing tokens for this email
-        DB::table('password_reset_tokens')->where('email', $user->email)->delete();
+        DB::table('password_resets')->where('email', $user->email)->delete();
 
         // Generate a secure token
         $token = Str::random(64);
 
-        DB::table('password_reset_tokens')->insert([
+        DB::table('password_resets')->insert([
             'email'      => $user->email,
             'token'      => Hash::make($token),
             'created_at' => now(),
@@ -82,7 +82,7 @@ class PasswordResetController extends Controller
             'password_confirmation' => 'required|string',
         ]);
 
-        $record = DB::table('password_reset_tokens')
+        $record = DB::table('password_resets')
             ->where('email', $request->email)
             ->first();
 
@@ -94,7 +94,7 @@ class PasswordResetController extends Controller
 
         // Tokens expire after 60 minutes
         if (now()->diffInMinutes($record->created_at) > 60) {
-            DB::table('password_reset_tokens')->where('email', $request->email)->delete();
+            DB::table('password_resets')->where('email', $request->email)->delete();
             return response()->json([
                 'message' => 'This reset link has expired. Please request a new one.',
             ], 422);
@@ -113,8 +113,8 @@ class PasswordResetController extends Controller
         // Invalidate all existing tokens for this user
         $user->tokens()->delete();
 
-        // Clean up the reset token
-        DB::table('password_reset_tokens')->where('email', $request->email)->delete();
+        // Clean up the used reset token
+        DB::table('password_resets')->where('email', $request->email)->delete();
 
         return response()->json([
             'message' => 'Password reset successful. You can now sign in with your new password.',
