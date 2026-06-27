@@ -267,7 +267,7 @@ export default function ServicesPage() {
                       <div className="p-5">
                         <div className="flex items-center gap-3 mb-3">
                           <div
-                            className={`w-10 h-10 rounded-xl flex items-center justify-center border ${meta.bg} ${meta.border} group-hover:scale-110 transition-transform duration-300 flex-shrink-0`}
+                            className={`w-10 h-10 rounded-xl flex items-center justify-center border ${meta.bg} ${meta.border} group-hover:scale-110 transition-transform duration-300 shrink-0`}
                           >
                             <Icon className={`w-5 h-5 ${meta.text}`} aria-hidden="true" />
                           </div>

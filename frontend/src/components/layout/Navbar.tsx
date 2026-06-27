@@ -96,7 +96,7 @@ export default function Navbar() {
                       onClick={() => setServicesOpen(false)}
                       className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-300 hover:bg-white/10 hover:text-white transition-colors"
                     >
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#1C9AD6] flex-shrink-0" aria-hidden="true" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#1C9AD6] shrink-0" aria-hidden="true" />
                       {cat}
                     </Link>
                   ))}
