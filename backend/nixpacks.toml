@@ -1,14 +1,15 @@
 [phases.setup]
-nixPkgs = ["php", "phpPackages.composer", "phpPackages.pdo_mysql"]
+nixPkgs = ["php81", "php81Packages.composer"]
+nixLibs = []
 
 [phases.install]
 cmds = ["composer install --no-dev --optimize-autoloader --no-interaction"]
 
 [phases.build]
 cmds = [
-  "php artisan config:clear || true",
-  "php artisan route:clear || true",
-  "php artisan view:clear || true"
+  "php artisan config:clear",
+  "php artisan route:clear",
+  "php artisan view:clear"
 ]
 
 [start]
