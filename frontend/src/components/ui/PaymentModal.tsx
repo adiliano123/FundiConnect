@@ -115,17 +115,23 @@ export default function PaymentModal({ booking, onClose, onSuccess }: Props) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
 
         {/* Header */}
-        <div className="bg-[#1D234F] px-6 py-4 flex items-center justify-between">
+        <div className="bg-[#1D234F] px-6 py-5 rounded-t-2xl flex items-center justify-between sticky top-0 z-10">
           <div>
-            <p className="text-white font-bold text-sm">Pay for Booking</p>
+            <p className="text-white font-bold text-base">Pay for Booking</p>
             <p className="text-blue-200 text-xs font-mono mt-0.5">{booking.booking_number}</p>
           </div>
           {step !== 'polling' && step !== 'processing' && (
-            <button onClick={onClose} className="text-white/60 hover:text-white text-xl leading-none">✕</button>
+            <button
+              onClick={onClose}
+              className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors text-lg leading-none"
+              aria-label="Close"
+            >
+              ✕
+            </button>
           )}
         </div>
 

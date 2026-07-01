@@ -50,6 +50,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Token Last Used Tracking
+    |--------------------------------------------------------------------------
+    |
+    | By default Sanctum updates `last_used_at` on every request which
+    | causes a write lock on `personal_access_tokens`. Setting this to
+    | false prevents lock-wait timeouts under concurrent requests.
+    |
+    */
+
+    'track_api_token_last_used' => false,
+
+    /*
+    |--------------------------------------------------------------------------
     | Sanctum Middleware
     |--------------------------------------------------------------------------
     |

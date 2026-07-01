@@ -32,11 +32,16 @@ return [
     ],
 
     'zenopay' => [
-        'api_key'    => env('ZENOPAY_API_KEY'),
-        'account_id' => env('ZENOPAY_ACCOUNT_ID'),
-        'secret_key' => env('ZENOPAY_SECRET_KEY'),
-        'base_url'   => env('ZENOPAY_BASE_URL', 'https://api.zeno.africa'),
+        'api_key'        => env('ZENOPAY_API_KEY'),
+        'account_id'     => env('ZENOPAY_ACCOUNT_ID'),
+        'secret_key'     => env('ZENOPAY_SECRET_KEY'),
+        'base_url'       => env('ZENOPAY_BASE_URL', 'https://api.zeno.africa'),
         'webhook_secret' => env('ZENOPAY_WEBHOOK_SECRET'),
+    ],
+
+    'snippe' => [
+        'api_key'  => env('SNIPPE_API_KEY'),
+        'base_url' => env('SNIPPE_BASE_URL', 'https://payments.hasethospital.or.tz/public/api'),
     ],
 
 ];

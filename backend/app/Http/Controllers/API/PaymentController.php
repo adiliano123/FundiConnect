@@ -82,21 +82,29 @@ class PaymentController extends Controller
     }
 
     /**
-     * POST /api/payments/webhook  (public — called by ZenoPay)
-     * No auth middleware. Validates signature, processes callback.
+     * POST /api/payments/webhook  (public — called by Snippe or ZenoPay)
+     * No auth middleware. Detects gateway from payload and processes callback.
      */
     public function webhook(Request $request): JsonResponse
     {
-        $rawBody  = $request->getContent();
-        $signature = $request->header('X-ZenoPay-Signature', '');
+        $payload = $request->all();
+        $rawBody = $request->getContent();
 
-        if (!$this->zenoPayService->verifyWebhookSignature($rawBody, $signature)) {
-            Log::warning('ZenoPay webhook: invalid signature');
-            return response()->json(['message' => 'Invalid signature'], 401);
+        // Detect gateway: Snippe payloads contain 'provider', ZenoPay contain 'account_id'
+        $isSnippе = isset($payload['provider']) || isset($payload['payment_account']);
+        $gateway  = $isSnippе ? 'snippe' : 'zenopay';
+
+        if ($gateway === 'zenopay') {
+            $signature = $request->header('X-ZenoPay-Signature', '');
+            if (!$this->zenoPayService->verifyWebhookSignature($rawBody, $signature)) {
+                Log::warning('ZenoPay webhook: invalid signature');
+                return response()->json(['message' => 'Invalid signature'], 401);
+            }
         }
 
-        $payload = $request->all();
-        $handled = $this->paymentService->handleWebhook($payload);
+        Log::info("Webhook received [{$gateway}]", $payload);
+
+        $handled = $this->paymentService->handleWebhook($payload, $gateway);
 
         return response()->json(['message' => $handled ? 'OK' : 'Ignored'], 200);
     }

@@ -15,52 +15,54 @@ class PaymentService
 {
     const COMMISSION_RATE = 10.0;
 
-    public function __construct(private ZenoPayService $zenoPay) {}
+    public function __construct(
+        private ZenoPayService   $zenoPay,
+        private SnippePayService $snippe,
+    ) {}
 
     /**
-     * Initiate payment via ZenoPay STK push.
-     * Creates payment record + fires STK push to customer's phone.
+     * Initiate payment.
+     * Mobile money → Snippe STK push.
+     * Card → ZenoPay (if configured).
      */
     public function initiate(Booking $booking, array $data): array
     {
-        // Prevent duplicate pending payments
         if ($booking->payment && $booking->payment->isCompleted()) {
             return ['success' => false, 'message' => 'Booking already paid', 'payment' => $booking->payment];
         }
 
-        // Reuse or create payment record
         $payment = $booking->payment ?? $this->createPaymentRecord($booking, $data);
 
-        // Update phone/method if re-initiating
-        if ($booking->payment) {
-            $payment->update([
-                'payment_method' => $data['payment_method'],
-                'phone_number'   => $data['phone_number'] ?? null,
-                'status'         => 'pending',
-            ]);
-        }
+        // Always update method/phone on re-initiate and force gateway to snippe
+        $payment->update([
+            'payment_method' => $data['payment_method'],
+            'phone_number'   => $data['phone_number'] ?? null,
+            'status'         => 'pending',
+            'gateway'        => 'snippe',
+        ]);
 
         $isMobileMoney = in_array($data['payment_method'], ['mpesa', 'airtel', 'tigopesa', 'halopesa']);
 
         if ($isMobileMoney) {
-            $result = $this->zenoPay->initiatePayment(
-                phone:       $data['phone_number'],
-                amount:      $payment->amount,
-                reference:   $payment->reference,
-                callbackUrl: url('/api/payments/webhook')
+            $result = $this->snippe->initiatePayment(
+                userId:         (string) $booking->customer_id,
+                recipientId:    (string) $booking->technician_id,
+                amount:         $payment->amount,
+                paymentMethod:  $data['payment_method'],
+                paymentAccount: $data['phone_number'],
             );
 
             if (!$result['success']) {
                 return ['success' => false, 'message' => $result['message'], 'payment' => $payment];
             }
 
-            // Store the ZenoPay order_id for status polling / webhook matching
             $payment->update([
                 'gateway_reference' => $result['order_id'],
-                'meta'              => array_merge($payment->meta ?? [], ['zenopay_order_id' => $result['order_id']]),
+                'meta'              => array_merge($payment->meta ?? [], [
+                    'snippe_order_id' => $result['order_id'],
+                ]),
             ]);
 
-            // Transition booking to awaiting_payment
             $booking->update(['status' => 'awaiting_payment']);
 
             return [
@@ -71,31 +73,62 @@ class PaymentService
             ];
         }
 
-        // Card/cash — return payment record for manual handling
+        // Card — use ZenoPay if credentials exist, otherwise mark manual
+        $zenoKey = config('services.zenopay.api_key');
+
+        if ($zenoKey) {
+            $result = $this->zenoPay->initiatePayment(
+                phone:       $data['phone_number'] ?? '',
+                amount:      $payment->amount,
+                reference:   $payment->reference,
+                callbackUrl: url('/api/payments/webhook'),
+            );
+
+            if (!$result['success']) {
+                return ['success' => false, 'message' => $result['message'], 'payment' => $payment];
+            }
+
+            $payment->update([
+                'gateway'           => 'zenopay',
+                'gateway_reference' => $result['order_id'],
+                'meta'              => array_merge($payment->meta ?? [], [
+                    'zenopay_order_id' => $result['order_id'],
+                ]),
+            ]);
+        } else {
+            $payment->update(['gateway' => 'manual']);
+        }
+
         $booking->update(['status' => 'awaiting_payment']);
 
-        return ['success' => true, 'message' => 'Payment initiated', 'payment' => $payment];
+        return ['success' => true, 'message' => 'Payment initiated', 'payment' => $payment->fresh()];
     }
 
     /**
-     * Poll ZenoPay for payment status (called by frontend polling or manual verify).
+     * Poll payment status — checks correct gateway based on payment record.
      */
     public function verify(Payment $payment): array
     {
-        $orderId = $payment->meta['zenopay_order_id'] ?? $payment->gateway_reference;
+        $gateway = $payment->gateway ?? 'snippe';
+        $orderId = $payment->meta['snippe_order_id']
+            ?? $payment->meta['zenopay_order_id']
+            ?? $payment->gateway_reference;
 
         if (!$orderId) {
             return ['success' => false, 'status' => 'PENDING', 'message' => 'No order ID found'];
         }
 
-        $result = $this->zenoPay->checkStatus($orderId);
+        $result = $gateway === 'zenopay'
+            ? $this->zenoPay->checkStatus($orderId)
+            : $this->snippe->checkStatus($orderId);
 
         if ($result['status'] === 'COMPLETED') {
-            $this->complete($payment, $orderId, $result['raw']['transaction_id'] ?? $orderId);
+            $txId = $result['transaction_id'] ?? $orderId;
+            $this->complete($payment, $orderId, $txId);
             return ['success' => true, 'status' => 'COMPLETED', 'message' => 'Payment confirmed'];
         }
 
-        if ($result['status'] === 'FAILED' || $result['status'] === 'CANCELLED') {
+        if (in_array($result['status'], ['FAILED', 'CANCELLED'])) {
             $this->fail($payment, $result['message']);
             return ['success' => false, 'status' => $result['status'], 'message' => $result['message']];
         }
@@ -104,34 +137,39 @@ class PaymentService
     }
 
     /**
-     * Process ZenoPay webhook callback.
-     * Called automatically by ZenoPay after STK push completes.
+     * Handle webhook from Snippe or ZenoPay.
      */
-    public function handleWebhook(array $payload): bool
+    public function handleWebhook(array $payload, string $gateway = 'snippe'): bool
     {
-        Log::info('ZenoPay webhook received', $payload);
+        Log::info("{$gateway} webhook received", $payload);
 
-        $orderId       = $payload['order_id']      ?? null;
-        $status        = strtoupper($payload['payment_status'] ?? '');
+        $orderId       = $payload['order_id'] ?? null;
+        $rawStatus     = strtoupper($payload['status'] ?? $payload['payment_status'] ?? '');
         $transactionId = $payload['transaction_id'] ?? $orderId;
 
+        $status = match (true) {
+            str_contains($rawStatus, 'COMPLET') => 'COMPLETED',
+            str_contains($rawStatus, 'FAIL')    => 'FAILED',
+            str_contains($rawStatus, 'CANCEL')  => 'CANCELLED',
+            default                             => 'PENDING',
+        };
+
         if (!$orderId) {
-            Log::warning('ZenoPay webhook missing order_id', $payload);
+            Log::warning("{$gateway} webhook missing order_id", $payload);
             return false;
         }
 
-        // Find payment by gateway_reference (ZenoPay order_id)
         $payment = Payment::where('gateway_reference', $orderId)
+            ->orWhereJsonContains('meta->snippe_order_id', $orderId)
             ->orWhereJsonContains('meta->zenopay_order_id', $orderId)
             ->first();
 
         if (!$payment) {
-            Log::warning('ZenoPay webhook: payment not found', ['order_id' => $orderId]);
+            Log::warning("{$gateway} webhook: payment not found", ['order_id' => $orderId]);
             return false;
         }
 
         if ($payment->isCompleted()) {
-            Log::info('ZenoPay webhook: already completed', ['payment_id' => $payment->id]);
             return true;
         }
 
@@ -148,9 +186,6 @@ class PaymentService
         return false;
     }
 
-    /**
-     * Mark payment completed, update booking to 'paid', credit wallet, fire event.
-     */
     public function complete(Payment $payment, string $gatewayReference, string $transactionId): Payment
     {
         return DB::transaction(function () use ($payment, $gatewayReference, $transactionId) {
@@ -161,30 +196,20 @@ class PaymentService
                 'paid_at'           => now(),
             ]);
 
-            // Update booking status to 'paid'
-            $payment->booking->update([
-                'status'  => 'paid',
-                'paid_at' => now(),
-            ]);
+            $payment->booking->update(['status' => 'paid', 'paid_at' => now()]);
 
-            // Credit technician wallet
             $this->creditWallet($payment);
 
-            // Fire event — listener handles all emails + notifications
             PaymentProcessed::dispatch($payment->fresh());
 
             return $payment->fresh();
         });
     }
 
-    /**
-     * Mark payment as failed.
-     */
     public function fail(Payment $payment, string $reason): Payment
     {
         $payment->update(['status' => 'failed', 'failure_reason' => $reason]);
 
-        // Revert booking to accepted so customer can retry
         if ($payment->booking->status === 'awaiting_payment') {
             $payment->booking->update(['status' => 'accepted']);
         }
@@ -211,7 +236,7 @@ class PaymentService
             'currency'          => 'TZS',
             'status'            => 'pending',
             'payment_method'    => $data['payment_method'],
-            'gateway'           => 'zenopay',
+            'gateway'           => 'snippe',
             'phone_number'      => $data['phone_number'] ?? null,
         ]);
     }
@@ -244,7 +269,7 @@ class PaymentService
         ]);
     }
 
-    public function debitWallet(Wallet $wallet, float $amount, string $description, ?int $bookingId = null): WalletTransaction
+    public function debitWallet(Wallet $wallet, float $amount, string $description): WalletTransaction
     {
         $balanceBefore = $wallet->balance;
         $balanceAfter  = $balanceBefore - $amount;

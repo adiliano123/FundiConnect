@@ -74,7 +74,7 @@ class BookingController extends Controller
         $validated = $request->validate([
             'status'              => 'required|in:accepted,rejected,in_progress,completed,cancelled',
             'rejection_reason'    => 'required_if:status,rejected|nullable|string',
-            'cancellation_reason' => 'required_if:status,cancelled|nullable|string',
+            'cancellation_reason' => 'nullable|string',
             'final_cost'          => 'nullable|numeric|min:0',
         ]);
 
