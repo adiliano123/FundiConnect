@@ -25,7 +25,11 @@ return [
         'http://localhost:3001',
     ],
 
-    'allowed_origins_patterns' => [],
+    'allowed_origins_patterns' => [
+        '#^https://.*\.vercel\.app$#',
+        '#^https://.*\.railway\.app$#',
+        '#^https://.*\.onrender\.com$#',
+    ],
 
     'allowed_headers' => ['*'],
 
